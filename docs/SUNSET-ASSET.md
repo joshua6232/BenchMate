@@ -1,0 +1,7 @@
+# Sunset environment asset
+
+Saved asset: public/sunset-metropolis.png
+Method: built-in image generation, not the paid API integration.
+Used as a distant exterior plane in Three.js; foreground remains interactive 3D. No image-to-3D reconstruction was performed.
+
+Prompt: Use case: photorealistic-natural. Asset type: panoramic environment backdrop texture for an interactive 3D penthouse PC desk website. Create an extraordinarily detailed cinematic architectural photograph of a beautiful futuristic utopian coastal metropolis at sunset, viewed from a high-rise at about the 45th floor, looking outward horizontally with a gentle downward angle. Entire image is ONLY exterior vista; no interior, desk, windows, frames, furniture or people. Dense sophisticated glass skyscrapers with varied realistic facades, elegant tapered towers, illuminated offices, terraced greenery, a curving waterway and luminous streets far below; vast layered depth and atmospheric haze to distant mountains. Sky upper 55 percent, city lower 45 percent. Dramatic finely textured clouds, peach and gold horizon, rose pink cloud edges, dusky lavender and deep indigo above, subtle cyan city lights. Sun near horizon slightly right of center. Premium architectural visualization, believable glass reflections, intricate fine detail, tasteful clean aspirational world, photographic realism, no simplistic block shapes, no cartoon, no illustration, no text or watermarks. Wide landscape 16:9 composition, high resolution.
