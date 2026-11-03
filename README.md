@@ -2,6 +2,12 @@
 
 A portfolio prototype that turns a real-time Three.js desk into navigation for PC troubleshooting, spending planning and guided assembly.
 
+## Hosted desk
+[Open Benchmate](https://benchmate-pc-workbench.maraisjoshua2.chatgpt.site/) — currently private to the owner; sign in with the owner ChatGPT account. This is not yet a public portfolio demo.
+
+## Visual quality
+Use the bottom quality menu: Balanced (default), High quality for capable displays, or Economy for slower devices. Motion starts paused. Select a monitor or the PC tower to open a tool; Tab and Enter support keyboard navigation, and Escape returns to the desk.
+
 ## Features
 - Clickable desk objects, keyboard navigation, mobile drag controls and a non-WebGL fallback.
 - Demand-driven rendering, paused motion by default, reduced-motion support and bounded drawing resolution.
