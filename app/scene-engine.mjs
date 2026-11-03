@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { scenePixelRatio, qualityProfiles } from './scene-quality.mjs';
 import { createSceneScheduler } from './scene-scheduler.mjs';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -11,7 +12,7 @@ export function createDesk(host, { onPick, onHover, onReady, onFailure, anchors 
   scene.background = new T.Color('#372744');
   scene.fog = new T.Fog('#5c4263', 42, 100);
   const camera = new T.PerspectiveCamera(37, 1, .1, 140);
-  const renderer = new T.WebGLRenderer({antialias:false,alpha:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:true});
+  const renderer = new T.WebGLRenderer({antialias:true,alpha:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:true});
   renderer.setPixelRatio(1);
   renderer.outputColorSpace=T.SRGBColorSpace;
   renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
@@ -71,7 +72,7 @@ export function createDesk(host, { onPick, onHover, onReady, onFailure, anchors 
   // Monitor shelf and a wide mat establish the same composition as the reference.
   box(6.3,.13,1.03,metal,scene,-.65,2.43,-.62,.025);for(const x of [-3.55,2.2])box(.2,.26,.85,black,scene,x,2.29,-.62,.012);
   box(5.6,.027,1.55,fabric,scene,-.25,2.223,.85,.1);
-  function screenTexture(label,sub){const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=640;const ctx=canvas.getContext('2d');ctx.fillStyle='#08121d';ctx.fillRect(0,0,1024,640);const gradient=ctx.createRadialGradient(700,240,10,700,240,700);gradient.addColorStop(0,'#88506d');gradient.addColorStop(.48,'#342951');gradient.addColorStop(1,'#10172c');ctx.fillStyle=gradient;ctx.fillRect(0,0,1024,640);ctx.strokeStyle='#477992';ctx.lineWidth=1.3;for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(1000,640,420+i*88,330+i*50,-.45,0,Math.PI*2);ctx.stroke();}ctx.fillStyle='#7da1b9';ctx.font='19px Arial';ctx.fillText('B E N C H M A T E',60,73);ctx.fillStyle='#e0f2ff';ctx.font='500 51px Arial';ctx.fillText(label,60,325);ctx.fillStyle='#90b6d2';ctx.font='23px Arial';ctx.fillText(sub,63,372);ctx.fillStyle='#a6d8f8';ctx.fillRect(63,414,56,2);const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;textures.add(texture);return texture;}
+  function screenTexture(label,sub){const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=640;const ctx=canvas.getContext('2d');ctx.fillStyle='#08121d';ctx.fillRect(0,0,1024,640);const gradient=ctx.createRadialGradient(700,240,10,700,240,700);gradient.addColorStop(0,'#88506d');gradient.addColorStop(.48,'#342951');gradient.addColorStop(1,'#10172c');ctx.fillStyle=gradient;ctx.fillRect(0,0,1024,640);ctx.strokeStyle='#477992';ctx.lineWidth=1.3;for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(1000,640,420+i*88,330+i*50,-.45,0,Math.PI*2);ctx.stroke();}ctx.fillStyle='#7da1b9';ctx.font='19px Arial';ctx.fillText('B E N C H M A T E',60,73);ctx.fillStyle='#e0f2ff';ctx.font='500 51px Arial';ctx.fillText(label,60,325);ctx.fillStyle='#90b6d2';ctx.font='23px Arial';ctx.fillText(sub,63,372);ctx.fillStyle='#a6d8f8';ctx.fillRect(63,414,56,2);const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());textures.add(texture);return texture;}
   function monitor(id,x,angle,label,sub){const g=group(id,x,3.69,-.74);g.rotation.y=angle;box(2.88,1.83,.12,black,g);box(2.84,1.79,.04,edge,g,0,0,-.075,.04);const material=new T.MeshStandardMaterial({map:screenTexture(label,sub),emissive:'#a8d6ff',emissiveMap:null,emissiveIntensity:.18,roughness:.32,metalness:.15});material.emissiveMap=material.map;materials.add(material);mesh(new T.PlaneGeometry(2.74,1.67),material,g,0,.02,.067);screens.push({id,material});box(.15,.43,.14,edge,g,0,-1.1,-.02);box(1,.045,.57,metal,g,0,-1.25,.11,.04);box(.9,.06,.09,edge,g,0,.99,.04,.025);box(.78,.012,.025,white,g,0,.96,.075,.004);const power=cylinder(.016,.008,blue,g,1.27,-.855,.073);power.rotation.x=Math.PI/2;anchor(id,x,3.7,-.58);}
   monitor('display',-2.13,.055,'Find your fix.','Troubleshooting');monitor('build',.84,-.055,'Build something great.','Parts & budgets');
   // Glass chassis with modeled motherboard, GPU, cables and animated fan blades.
@@ -112,10 +113,12 @@ export function createDesk(host, { onPick, onHover, onReady, onFailure, anchors 
   // A single clean world-space halo on each interactive object.
   Object.entries(points).forEach(([id,p])=>{const halo=ring(.062,.0035,white,scene,p.x,p.y+.18,p.z+.08);halo.castShadow=false;halo.userData.action=id;glows.push({id,mesh:halo});});
   let reduced=matchMedia('(prefers-reduced-motion: reduce)').matches, paused=true, active=null, hovered=null, disposed=false;
+  let quality='balanced';
   let width=1,height=1,time=0,lastTime=0,dragging=false,moved=false,downX=0,offsetX=0,targetOffset=0;
   const pointer=new T.Vector2(),raycaster=new T.Raycaster(),look=new T.Vector3(0,2.7,0),cameraGoal=new T.Vector3(),lookGoal=new T.Vector3();
   const reducedQuery=matchMedia('(prefers-reduced-motion: reduce)');const reducedChange=e=>{reduced=e.matches;invalidate();};reducedQuery.addEventListener('change',reducedChange);
-  function resize(){width=Math.max(1,host.clientWidth);height=Math.max(1,host.clientHeight);camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,1,Math.sqrt(900000/(width*height))));renderer.setSize(width,height,false);invalidate();}
+  function resize(){width=Math.max(1,host.clientWidth);height=Math.max(1,host.clientHeight);camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setPixelRatio(scenePixelRatio(width,height,window.devicePixelRatio,quality,renderer.capabilities.maxTextureSize));renderer.setSize(width,height,false);invalidate();}
+  window.addEventListener('resize',resize);
   const ro=new ResizeObserver(resize);ro.observe(host);resize();camera.position.set(0,5.3,14);camera.lookAt(look);
   function pick(event){const rect=renderer.domElement.getBoundingClientRect();pointer.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);raycaster.setFromCamera(pointer,camera);const intersections=raycaster.intersectObjects(interactive,true);for(const hit of intersections){let o=hit.object;while(o){if(o.userData.action)return o.userData.action;o=o.parent;}}return null;}
   function hover(id){if(id===hovered)return;hovered=id;invalidate();renderer.domElement.style.cursor=id?'pointer':'grab';onHover(id);}
@@ -143,6 +146,6 @@ export function createDesk(host, { onPick, onHover, onReady, onFailure, anchors 
   scheduler=createSceneScheduler({render:frame,isMoving:()=>!paused&&!reduced&&!active,isHidden:()=>document.hidden});
   const visibilityChange=()=>scheduler.visibilityChanged();document.addEventListener('visibilitychange',visibilityChange);
   scheduler.invalidate();onReady();
-  return {setActive(value){active=value;invalidate();},setPaused(value){paused=value;invalidate();},setHover(id){hover(id);},focus(id){if(width<700&&points[id])targetOffset=T.MathUtils.clamp(points[id].x,-3.8,3.8);invalidate();},dispose(){disposed=true;scheduler.dispose();document.removeEventListener('visibilitychange',visibilityChange);ro.disconnect();reducedQuery.removeEventListener('change',reducedChange);renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('pointerleave',leave);renderer.domElement.removeEventListener('webglcontextlost',contextLost);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());envTarget.dispose();renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();}};
+  return {setQuality(value){quality=Object.hasOwn(qualityProfiles,value)?value:'balanced';resize();},setActive(value){active=value;invalidate();},setPaused(value){paused=value;invalidate();},setHover(id){hover(id);},focus(id){if(width<700&&points[id])targetOffset=T.MathUtils.clamp(points[id].x,-3.8,3.8);invalidate();},dispose(){disposed=true;scheduler.dispose();document.removeEventListener('visibilitychange',visibilityChange);ro.disconnect();window.removeEventListener('resize',resize);reducedQuery.removeEventListener('change',reducedChange);renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('pointerleave',leave);renderer.domElement.removeEventListener('webglcontextlost',contextLost);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());envTarget.dispose();renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();}};
 }
 

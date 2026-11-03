@@ -40,3 +40,8 @@
 .live-3d .scene-anchor-core{background:#fff0e7;box-shadow:0 0 14px 4px #ffb7bd55}
 .live-3d .motion-toggle{border-color:#9f7b985c!important;color:#ecd3e3!important;background:#251c3040!important}
 .live-3d .desk-invitation{color:#f0dce9}
+
+/* Keep quality and motion controls usable on narrow displays. */
+.scene-quality select{height:32px;max-width:120px;padding:0 7px;border:1px solid #9f7b985c;border-radius:5px;background:#251c30;color:#ecd3e3;font-size:11px;color-scheme:dark}
+.scene-quality select:focus-visible{outline:2px solid #b7dfff;outline-offset:3px}
+@media(max-width:700px){.live-3d .desk-bottom .mobile-instruction{display:none}.scene-quality select{max-width:110px}.live-3d .desk-bottom{justify-content:space-between}}
