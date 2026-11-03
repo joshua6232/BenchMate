@@ -1,0 +1,47 @@
+/* DOM hotspots track real 3D object projections. The whole mesh is also clickable. */
+.live-3d .desk-stage{position:absolute;inset:0;margin:0;width:100%;height:100svh;max-width:none;overflow:hidden}
+.webgl-mount{position:absolute;inset:0}
+.webgl-mount canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.scene-hotspots{position:absolute;inset:0;pointer-events:none}
+.scene-anchor{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;pointer-events:auto;z-index:3}
+.scene-anchor:focus-visible{outline:1px solid #b7dfff;background:#b7dfff15}
+.scene-anchor-core{width:6px;height:6px;border-radius:50%;background:#effaff;box-shadow:0 0 12px 3px #81c7ff45;opacity:.85;pointer-events:none}
+.scene-anchor.is-hovered .scene-anchor-core{box-shadow:0 0 20px 6px #8bc5ff70}
+.scene-object-label{position:absolute;left:50%;top:100%;transform:translate(-50%,5px);display:flex;align-items:center;gap:12px;opacity:0;background:#111e2aed;border:1px solid #55748c80;backdrop-filter:blur(15px);padding:12px 16px;min-width:210px;border-radius:10px;color:#c6e5fb;pointer-events:none;transition:opacity .16s,transform .16s;text-align:left}
+.scene-object-label strong{display:block;font-size:14px;font-weight:500;white-space:nowrap}
+.scene-object-label small{display:block;font-size:12px;color:#93acc0;white-space:nowrap}
+.scene-anchor.is-hovered{z-index:6}
+.scene-anchor.is-hovered .scene-object-label{opacity:1;transform:translate(-50%,12px)}
+.scene-anchor[aria-label^='PC tower'] .scene-object-label{transform:translate(-85%,5px)}
+.scene-anchor[aria-label^='PC tower'].is-hovered .scene-object-label{transform:translate(-85%,12px)}
+.scene-anchor[aria-label^='Headphones'] .scene-object-label{transform:translate(-15%,5px)}
+.live-3d .desk-invitation{bottom:77px}
+.live-3d .desk-bottom{height:62px}
+.scene-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#abc5d8;font-size:14px;letter-spacing:1px}
+.scene-fallback{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.scene-fallback img{width:100%;max-height:65vh;object-fit:contain}
+.scene-fallback p{font-size:13px;color:#adbfcc}
+.scene-fallback>div{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.scene-fallback button{background:#1d3041;border:1px solid #476781;border-radius:6px;color:#c7dfef;padding:10px 14px;font-size:14px}
+.motion-toggle{min-width:100px!important;font-size:11px!important;color:#98b2c6!important;background:transparent!important;border:1px solid #314656!important;border-radius:5px!important;height:30px!important}
+.motion-toggle[data-state=on]{background:#b7dfff14!important;color:#d4ebfd!important}
+.live-3d .desk-brandbar{height:80px}
+.live-3d .desk-save{font-size:11px}
+.desk-dialog{transition:opacity .2s}
+.desk-help a{color:#c4e4fc;text-underline-offset:4px}
+@media(max-width:700px){.live-3d .desk-invitation{bottom:93px}.live-3d .desk-brandbar{padding:0 20px}.live-3d .desk-bottom{padding:0 16px;height:73px;gap:8px}.live-3d .desk-bottom button{font-size:10px}.live-3d .desk-edition{display:none}.live-3d .desk-bottom>button:last-child span{display:none}.scene-object-label{min-width:170px;padding:10px}.scene-object-label small{white-space:normal}.motion-toggle{min-width:90px!important}}
+/* Sunset studio finish: warm glass controls over the violet city scene. */
+.live-3d .desk-brandbar{background:linear-gradient(180deg,#191322a8,transparent)}
+.live-3d .desk-edition{color:#ead2d9}
+.live-3d .desk-brand svg{color:#f5b4b9}
+.live-3d .desk-bottom{background:linear-gradient(0deg,#17121db8,transparent)}
+.live-3d .scene-object-label{background:#241c30ed;border-color:#ba879b70;color:#ffe2de}
+.live-3d .scene-object-label small{color:#c5b1ca}
+.live-3d .scene-anchor-core{background:#fff0e7;box-shadow:0 0 14px 4px #ffb7bd55}
+.live-3d .motion-toggle{border-color:#9f7b985c!important;color:#ecd3e3!important;background:#251c3040!important}
+.live-3d .desk-invitation{color:#f0dce9}
+
+/* Keep quality and motion controls usable on narrow displays. */
+.scene-quality select{height:32px;max-width:120px;padding:0 7px;border:1px solid #9f7b985c;border-radius:5px;background:#251c30;color:#ecd3e3;font-size:11px;color-scheme:dark}
+.scene-quality select:focus-visible{outline:2px solid #b7dfff;outline-offset:3px}
+@media(max-width:700px){.live-3d .desk-bottom .mobile-instruction{display:none}.scene-quality select{max-width:110px}.live-3d .desk-bottom{justify-content:space-between}}
